@@ -26,13 +26,13 @@ unsetup larbatch
 setup larbatch v01_61_00
 ```
 
-### CNAF
+### CNAF (ICARUS ONLY)
 
 ```bash
 source /cvmfs/icarus.opensciencegrid.org/products/icarus/setup_icarus.sh
 setup cigetcert
 cigetcert -i 'Fermi National Accelerator Laboratory' --myproxyserver=myproxy.cnaf.infn.it --myproxyretrievers='/DC=org/DC=incommon/C=US/ST=Illinois/O=Fermi Research Alliance/CN=(fifebatch|(hepcjobsub0(1|2))|jobsubdevgpvm01).fnal.gov' --myproxyhours=24 --hours=672 -u <fnal_user>
-voms-proxy-init -noregen -rfc -voms 'fermilab:/fermilab/<experiment>/Role=Analysis'
+voms-proxy-init -noregen -rfc -voms 'fermilab:/fermilab/icarus/Role=Analysis'
 ```
 Remember to setup FIFE stuff (and `samweb`, e.g. needed to prestage):
 
@@ -48,7 +48,7 @@ Create a `samweb` definition and prestage the related files:
 samweb list-files "run_number 12174 and data_tier raw"
 
 # check files in the definition
-samweb list-definition-files triozzi_raw_run12174_offbeambnbminbiascalib
+samweb list-definition-files raw_run12174_offbeambnbminbiascalib
 
 # locate a file
 # XRootD: --schema=root
@@ -58,16 +58,17 @@ samweb locate-file <filename>.root
 samweb get-metadata <filename>.root
 
 # create a samweb defintion
-samweb create-definition triozzi_raw_run12174_offbeambnbminbiascalib "run_number 12174 AND data_tier raw"
+samweb create-definition raw_run12174_offbeambnbminbiascalib "run_number 12174 AND data_tier raw"
 
 # prestage
 # ...possibly on tmux! This WILL hang for a while and
 # all background processes launched from a SL7 container
 # will die when closing it.
-nohup sam_prestage_dataset --defname=triozzi_raw_run12174_offbeambnbminbiascalib &
+nohup sam_prestage_dataset --defname=raw_run12174_offbeambnbminbiascalib &
 ```
 The prestaging process will appear to hang and only print file names as they are successfully staged.
-You can check the status of a prestaging process using:
+
+ICARUS: You can check the status of a prestaging process using:
 [https://samicarus.fnal.gov:8483/station_monitor/icarus/stations/icarus/projects/](https://samicarus.fnal.gov:8483/station_monitor/icarus/stations/icarus/projects/)
 
 ## Submitting jobs
@@ -99,7 +100,10 @@ jobsub_q --user $USER -G <experiment>
 jobsub_rm --jobid <PID>
 ```
 Check the status here: [https://fifemon.fnal.gov/monitor/d/000000116/user-batch-details?orgId=1&var-cluster=fifebatch&var-user=$USER](https://fifemon.fnal.gov/monitor/d/000000116/user-batch-details?orgId=1&var-cluster=fifebatch&var-user=$USER)
-For "held" jobs, the reasons can be checked here ([https://fifemon.fnal.gov/monitor/d/000000146/why-are-my-jobs-held?orgId=1&var-user=$USER](https://fifemon.fnal.gov/monitor/d/000000146/why-are-my-jobs-held?orgId=1&var-user=$USER)). Useful stuff:
+For "held" jobs, the reasons can be checked here ([https://fifemon.fnal.gov/monitor/d/000000146/why-are-my-jobs-held?orgId=1&var-user=$USER](https://fifemon.fnal.gov/monitor/d/000000146/why-are-my-jobs-held?orgId=1&var-user=$USER)). 
+
+
+Useful stuff:
 
 ```bash
 # get held-code of held jobs
